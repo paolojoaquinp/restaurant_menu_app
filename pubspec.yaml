@@ -36,6 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   card_swiper: ^3.0.1
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:
