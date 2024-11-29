@@ -17,6 +17,7 @@ class CardTest extends StatelessWidget {
         child: Card(
           elevation: 4.0,
           shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.black, width: 2.0),
             borderRadius: BorderRadius.circular(16.0),
           ),
           child: Padding(
