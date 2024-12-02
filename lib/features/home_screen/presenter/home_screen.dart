@@ -14,8 +14,41 @@ class _HomeScreenState extends State<HomeScreen> {
   final int lengthItems = 10;
   double percentPage = 0.0;
 
+  PageController? _pageController;
+  int? _currentIndex;
+  double? _pagePercent;
+
+  @override
+  void initState() {
+    _currentIndex = lengthItems-1;
+    _pageController = PageController(
+      initialPage: _currentIndex!,
+    );
+    _pagePercent = 0.0;
+    _pageController!.addListener(_pageListener);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController!
+      ..removeListener(_pageListener)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _pageListener() {
+    _currentIndex = _pageController!.page!.floor();
+    _pagePercent = (_pageController!.page! - _currentIndex!).abs();
+    print('Page percent: $_pagePercent');
+    print('Current index $_currentIndex');
+    setState(() {});
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    print(_currentIndex);
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -23,10 +56,10 @@ class _HomeScreenState extends State<HomeScreen> {
           clipBehavior: Clip.none,
           children: [
             ...List.generate(
-              lengthItems - 1,
+              lengthItems,
               (index) {
                 return _TransformedCard(
-                  factorChange: currentValue,
+                  factorChange:1- _pagePercent!,
                   index: index,
                   child: CardTest(index: index),
                 );
@@ -34,12 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             // Animated Container appearance with opacity
             Positioned(
-              bottom: lerpDouble(-150, 0, currentValue), // FINAL TIME
+              bottom: lerpDouble(-150, 0, 1-_pagePercent!), // FINAL TIME
               left: 130,
               child: Transform.rotate(
-                angle: -pi / lerpDouble(3,10,currentValue)!,
+                angle: -pi / lerpDouble(3,10,1-_pagePercent!)!,
                 child: Opacity(
-                  opacity: currentValue,
+                  opacity:1-_pagePercent!,
                   child: Container(
                     color: Colors.red,
                     width: 300,
@@ -56,9 +89,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 300,
                 height: 500,
                 child: PageView.builder(
+                  controller: _pageController,
                     scrollDirection: Axis.vertical,
                     clipBehavior: Clip.none,
                     itemCount: 10,
+                    reverse: true,
                     itemBuilder: (context, index) {
                       return Transform.rotate(
                         angle: -pi / (10),
@@ -75,12 +110,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
               ),
             ),
-            Slider(
-                value: currentValue,
-                onChanged: (value) {
-                  currentValue = value;
-                  setState(() {});
-                }),
+            // Slider(
+            //     value: currentValue,
+            //     onChanged: (value) {
+            //       currentValue = value;
+            //       setState(() {});
+            //     }),
           ],
         ),
       ),
