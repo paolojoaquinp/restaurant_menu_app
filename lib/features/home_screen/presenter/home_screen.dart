@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
               lengthItems - 1,
               (index) {
                 return _TransformedCard(
+                  factorChange: currentValue,
                   index: index,
                   child: CardTest(index: index),
                 );
@@ -33,16 +34,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             // Animated Container appearance with opacity
             Positioned(
-              top: 260,
+              bottom: lerpDouble(-150, 0, currentValue), // FINAL TIME
               left: 130,
               child: Transform.rotate(
                 angle: -pi / lerpDouble(3,10,currentValue)!,
-  //              angle: -pi / 3, // TIME initial
-//                angle: -pi / 10, // TIME end
-                child: Container(
-                  color: Colors.red,
-                  width: 300,
-                  height: 500,
+                child: Opacity(
+                  opacity: currentValue,
+                  child: Container(
+                    color: Colors.red,
+                    width: 300,
+                    height: 500,
+                  ),
                 ),
               ),
             ),
@@ -91,20 +93,22 @@ class _TransformedCard extends StatelessWidget {
     super.key,
     required this.index,
     required this.child,
+    required this.factorChange,
   });
 
   final int index;
   final Widget child;
+  final double factorChange;
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: index * 40,
+      top: ((index+1)-factorChange) * 40,
       right: 50.0 + (index * 20),
       child: Transform.translate(
         offset: Offset(250, -100.0),
         child: Transform.rotate(
-          angle: -pi / (10),
+          angle: -pi / 10,
           child: SizedBox(
             height: 500,
             width: 280,
