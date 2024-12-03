@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -9,9 +10,9 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       body: PerspectiveListView(
-        visualizedItems: 15,
-        itemExtent: MediaQuery.sizeOf(context).height * .33,
-        initialIndex: 10,
+        visualizedItems: 7,
+        itemExtent: MediaQuery.sizeOf(context).height * .7,
+        initialIndex: 7,
         backItemsShadowColor: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.all(10),
         onTapFrontItem: (value) {},
@@ -85,68 +86,71 @@ class PerspectiveListViewState extends State<PerspectiveListView> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final height = constraints.maxHeight;
-        return Stack(
-          children: [
-            //---------------------------------------
-            // Perspective Items List
-            //---------------------------------------
-            Padding(
-              padding: widget.padding,
-              child: _PerspectiveItems(
-                generatedItems: widget.visualizedItems! - 1,
-                currentIndex: _currentIndex,
-                heightItem: widget.itemExtent,
-                pagePercent: _pagePercent,
-                children: widget.children,
+    return Transform.translate(
+      offset: Offset(50, 0.0),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final height = constraints.maxHeight;
+          return Stack(
+            children: [
+              //---------------------------------------
+              // Perspective Items List
+              //---------------------------------------
+              Padding(
+                padding: widget.padding,
+                child: _PerspectiveItems(
+                  generatedItems: widget.visualizedItems! - 1,
+                  currentIndex: _currentIndex,
+                  heightItem: widget.itemExtent,
+                  pagePercent: _pagePercent,
+                  children: widget.children,
+                ),
               ),
-            ),
-            //---------------------------------------
-            // Back Items Shadow
-            //---------------------------------------
-            if (widget.enableBackItemsShadow)
-              Positioned.fill(
-                bottom: widget.itemExtent,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        widget.backItemsShadowColor.withOpacity(.8),
-                        widget.backItemsShadowColor.withOpacity(0),
-                      ],
+              //---------------------------------------
+              // Back Items Shadow
+              //---------------------------------------
+              if (widget.enableBackItemsShadow)
+                Positioned.fill(
+                  bottom: widget.itemExtent,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          widget.backItemsShadowColor.withOpacity(.8),
+                          widget.backItemsShadowColor.withOpacity(0),
+                        ],
+                      ),
                     ),
                   ),
                 ),
+              //---------------------------------------
+              // Void Page View
+              //---------------------------------------
+              PageView.builder(
+                scrollDirection: Axis.vertical,
+                controller: _pageController,
+                onPageChanged: widget.onChangeFrontItem?.call,
+                physics: const BouncingScrollPhysics(),
+                itemCount: widget.children.length,
+                itemBuilder: (context, index) {
+                  return const SizedBox();
+                },
               ),
-            //---------------------------------------
-            // Void Page View
-            //---------------------------------------
-            PageView.builder(
-              scrollDirection: Axis.vertical,
-              controller: _pageController,
-              onPageChanged: widget.onChangeFrontItem?.call,
-              physics: const BouncingScrollPhysics(),
-              itemCount: widget.children.length,
-              itemBuilder: (context, index) {
-                return const SizedBox();
-              },
-            ),
-            //---------------------------------------
-            // On Tap Item Area
-            //---------------------------------------
-            Positioned.fill(
-              top: height - widget.itemExtent!,
-              child: GestureDetector(
-                onTap: () => widget.onTapFrontItem?.call(_currentIndex),
-              ),
-            )
-          ],
-        );
-      },
+              //---------------------------------------
+              // On Tap Item Area
+              //---------------------------------------
+              Positioned.fill(
+                top: height - widget.itemExtent!,
+                child: GestureDetector(
+                  onTap: () => widget.onTapFrontItem?.call(_currentIndex),
+                ),
+              )
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -183,6 +187,7 @@ class _PerspectiveItems extends StatelessWidget {
                 factorChange: 1,
                 endScale: .5,
                 child: children[currentIndex! - generatedItems],
+                currentIndex: currentIndex! - generatedItems,
               )
             else
               const SizedBox(),
@@ -195,13 +200,16 @@ class _PerspectiveItems extends StatelessWidget {
                       heightItem: heightItem,
                       factorChange: pagePercent,
                       scale: lerpDouble(0.5, 1, (index + 1) / generatedItems),
-                      translateY:
-                          (height - heightItem!) * (index + 1) / generatedItems,
+                      translateY: (height - heightItem!) * (index + 1) / generatedItems,
+                      endTranslateY: (height - heightItem!) * (index / generatedItems),
                       endScale: lerpDouble(0.5, 1, index / generatedItems),
-                      endTranslateY:
-                          (height - heightItem!) * (index / generatedItems),
-                      child: children[
-                          currentIndex! - (((generatedItems - 2) - index) + 1)],
+                      translateX: (-50.0) * (index + 1) / generatedItems, // Nuevo
+                      endTranslateX: (-50.0) * (index / generatedItems), // Nuevo
+                      rotateZStart: (-pi / 12) * (index! + 1) / generatedItems, // Nuevo
+                      rotateZEnd: (-pi / 12) * (index) / generatedItems,
+                      currentIndex: index,
+                      child: children[currentIndex! - (((generatedItems - 2) - index) + 1)],
+                      opacity: 1.0,
                     )
                   : const SizedBox(),
             //---------------------------------
@@ -213,7 +221,13 @@ class _PerspectiveItems extends StatelessWidget {
                 factorChange: pagePercent,
                 translateY: height + 20,
                 endTranslateY: height - heightItem!,
+                translateX: -30.0 ,
+                endTranslateX: -50.0 ,
+                currentIndex: currentIndex! + 1,
+                rotateZStart: -pi / 4,
+                rotateZEnd: -pi / 12, 
                 child: children[currentIndex! + 1],
+                opacity: pagePercent!,
               )
             else
               const SizedBox()
@@ -233,6 +247,12 @@ class _TransformedItem extends StatelessWidget {
     this.scale = 1.0,
     this.endTranslateY = 0.0,
     this.translateY = 0.0,
+    required this.currentIndex,
+    this.translateX = 0.0,
+    this.endTranslateX = 0.0,
+    this.rotateZStart = 0.0, // Nuevo
+    this.rotateZEnd = 0.0,   // Nuevo
+    this.opacity = 1.0,
   });
 
   final Widget child;
@@ -242,23 +262,35 @@ class _TransformedItem extends StatelessWidget {
   final double endTranslateY;
   final double translateY;
   final double? scale;
+  final int currentIndex;
+  final double endTranslateX; // Nuevo
+  final double translateX;    // Nuevo
+  final double rotateZStart;
+  final double rotateZEnd;
+  final double opacity;
+
 
   @override
   Widget build(BuildContext context) {
+    print("Current: $currentIndex");
     return Transform(
       alignment: Alignment.topCenter,
       transform: Matrix4.identity()
         ..scale(lerpDouble(scale, endScale, factorChange!))
         ..translate(
-          0.0,
+          lerpDouble(translateX, endTranslateX, factorChange!)!,
           lerpDouble(translateY, endTranslateY, factorChange!)!,
-        ),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: SizedBox(
-          height: heightItem,
-          width: double.infinity,
-          child: child,
+        )
+        ..rotateZ(lerpDouble(rotateZStart, rotateZEnd, factorChange!)!), // Nuevo
+      child: Opacity(
+        opacity: opacity,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            height: heightItem,
+            width: double.infinity,
+            child: child,
+          ),
         ),
       ),
     );
