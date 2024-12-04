@@ -2,13 +2,17 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:restaurant_menu_app/features/home_screen/domain/entities/food_menu.dart';
 import 'package:restaurant_menu_app/features/home_screen/presenter/widgets/card_test.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+
+      backgroundColor: Colors.grey,
       body: PerspectiveListView(
         visualizedItems: 7,
         itemExtent: MediaQuery.sizeOf(context).height * .7,
@@ -16,9 +20,10 @@ class HomeScreen extends StatelessWidget {
         backItemsShadowColor: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.all(10),
         onTapFrontItem: (value) {},
-        children: List.generate(20, (index) {
-          final borderColor = Colors.accents[index % Colors.accents.length];
-          return CardTest(index: index);
+        children: List.generate(FoodMenu.fakeFoodMenuValues.length, (index) {
+          // final borderColor = Colors.accents[index % Colors.accents.length];
+          final elem = FoodMenu.fakeFoodMenuValues[index];
+          return CardTest(index: index,foodMenu: elem,);
         }),
       ),
     );
@@ -87,7 +92,10 @@ class PerspectiveListViewState extends State<PerspectiveListView> {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: Offset(50, 0.0),
+      offset: Offset(
+        MediaQuery.sizeOf(context).width * 0.22,
+        0.0,
+      ),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final height = constraints.maxHeight;
@@ -205,11 +213,11 @@ class _PerspectiveItems extends StatelessWidget {
                       endScale: lerpDouble(0.5, 1, index / generatedItems),
                       translateX: (-50.0) * (index + 1) / generatedItems, // Nuevo
                       endTranslateX: (-50.0) * (index / generatedItems), // Nuevo
-                      rotateZStart: (-pi / 12) * (index! + 1) / generatedItems, // Nuevo
+                      rotateZStart: (-pi / 12) * (index + 1) / generatedItems, // Nuevo
                       rotateZEnd: (-pi / 12) * (index) / generatedItems,
                       currentIndex: index,
-                      child: children[currentIndex! - (((generatedItems - 2) - index) + 1)],
                       opacity: 1.0,
+                      child: children[currentIndex! - (((generatedItems - 2) - index) + 1)],
                     )
                   : const SizedBox(),
             //---------------------------------
@@ -272,7 +280,6 @@ class _TransformedItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Current: $currentIndex");
     return Transform(
       alignment: Alignment.topCenter,
       transform: Matrix4.identity()
