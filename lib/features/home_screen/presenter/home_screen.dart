@@ -11,8 +11,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      backgroundColor: Colors.grey,
       body: PerspectiveListView(
         visualizedItems: 7,
         itemExtent: MediaQuery.sizeOf(context).height * .7,
