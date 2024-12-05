@@ -5,31 +5,40 @@ class NutritionLabelWidget extends StatelessWidget {
     super.key,
     required this.label,
     required this.value,
+    this.icon,
   });
 
   final String label;
   final String value;
+  final Widget? icon;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14.0,
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: 10.0,
+              color: Colors.grey[400],
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 14.0,
-              color: Colors.grey,
-            ),
+          Row(
+            children: [
+              if(icon!=null)
+                icon!,
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
           ),
         ],
       ),

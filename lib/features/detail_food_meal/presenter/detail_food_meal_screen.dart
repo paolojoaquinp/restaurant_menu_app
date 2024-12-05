@@ -11,7 +11,7 @@ class DetailFoodMealScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: kToolbarHeight,
           ),
           Container(
@@ -20,12 +20,30 @@ class DetailFoodMealScreen extends StatelessWidget {
             height: kToolbarHeight,
             alignment: Alignment.centerLeft,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                BackButton(),
-                Text(
-                  "Pasta",
-                  style: Theme.of(context).textTheme.titleLarge,
+                SizedBox(
+                  child: Row(
+                    children: [
+                      const BackButton(),
+                      Text(
+                        "Pasta",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ],
+                  ),
                 ),
+                Container(
+                  padding: const EdgeInsets.only(right: 28.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('1',style: Theme.of(context).textTheme.titleLarge,),
+                      Text('/16',style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey,height: 2.0,letterSpacing: 1.5),)
+                    ],
+                  ),
+                )
               ],
             ),
           ),
@@ -35,7 +53,7 @@ class DetailFoodMealScreen extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 Positioned(
-                  top: -30,
+                  top: -25,
                   right: -50,
                   child: Image.asset(
                     'assets/pizza.png',
@@ -57,8 +75,9 @@ class DetailFoodMealScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             NutritionLabelWidget(
-                              label: 'Calories',
-                              value: '300 kcal',
+                              label: 'RATING',
+                              value: '4.2',
+                              icon: Icon(Icons.star,color: Colors.green,size: 18.0,),
                             ),
                             NutritionLabelWidget(
                               label: 'Calories',
@@ -76,7 +95,7 @@ class DetailFoodMealScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 50,
                       ),
                       Expanded(
                         flex: 5,

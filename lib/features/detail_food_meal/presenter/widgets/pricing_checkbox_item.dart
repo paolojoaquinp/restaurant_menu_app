@@ -23,17 +23,19 @@ class PricingCheckboxItem extends StatelessWidget {
             child: Checkbox(
               value: false,
               shape: const CircleBorder(),
+              side: const BorderSide(color: Colors.grey,width: 1.5),
               onChanged: (_) {},
             ),
           ),
           const SizedBox(width: 8.0),
           Expanded(
-            child: Text(label),
+            child: Text(label,style: TextStyle(color: Colors.grey[400]),),
           ),
           Text(
             price,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
+              color: Colors.grey[400]
             ),
           ),
         ],
