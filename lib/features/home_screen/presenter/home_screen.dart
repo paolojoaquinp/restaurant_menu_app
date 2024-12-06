@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:restaurant_menu_app/features/detail_food_meal/presenter/detail_food_meal_screen.dart';
 import 'package:restaurant_menu_app/features/home_screen/domain/entities/food_menu.dart';
 import 'package:restaurant_menu_app/features/home_screen/presenter/widgets/card_food_animated.dart';
 import 'package:restaurant_menu_app/features/home_screen/presenter/widgets/card_test.dart';
@@ -154,9 +155,24 @@ class PerspectiveListViewState extends State<PerspectiveListView> {
               //---------------------------------------
               Positioned.fill(
                 top: height - widget.itemExtent!,
-                child: GestureDetector(
-                  onTap: () => widget.onTapFrontItem?.call(_currentIndex),
-                ),
+                child: GestureDetector(onTap: () {
+                  widget.onTapFrontItem?.call(_currentIndex);
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            DetailFoodMealScreen(
+                              foodMenu:(widget.children[_currentIndex!] as CardTest).foodMenu!,
+                              index: _currentIndex!,
+                            ),transitionDuration: const Duration(seconds: 1),
+                            transitionsBuilder:(context, animation, secondaryAnimation, child) {
+                              return SizeTransition(
+                                sizeFactor: animation,
+                                child: child,
+                              );
+                            },
+                      ));
+                }),
               )
             ],
           );
