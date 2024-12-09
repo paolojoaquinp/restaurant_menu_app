@@ -287,8 +287,8 @@ class _TransformedItem extends StatelessWidget {
     required this.currentIndex,
     this.translateX = 0.0,
     this.endTranslateX = 0.0,
-    this.rotateZStart = 0.0, // Nuevo
-    this.rotateZEnd = 0.0, // Nuevo
+    this.rotateZStart = 0.0,
+    this.rotateZEnd = 0.0,
     this.opacity = 1.0,
   });
 
