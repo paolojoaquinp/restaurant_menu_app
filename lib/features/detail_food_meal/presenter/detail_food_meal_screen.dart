@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:restaurant_menu_app/features/detail_food_meal/presenter/widgets/custom_app_bar.dart';
 import 'package:restaurant_menu_app/features/detail_food_meal/presenter/widgets/food_page_view_item.dart';
@@ -69,22 +68,12 @@ class _PageState extends State<_Page> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Stack(
+          clipBehavior: Clip.none,
           children: [
-            Column(
-              children: [
-                const SizedBox(
-                  height: kToolbarHeight,
-                ),
-                CustomAppBar(),
-                const Expanded(
-                  child: SizedBox(),
-                ),
-              ],
-            ),
             PageView.builder(
               controller: _pageController,
               clipBehavior: Clip.none,
-              itemCount: widget.foodMenu.mealFoods!.length,
+              itemCount: widget.foodMenu.mealFoods?.length ?? 0,
               itemBuilder: (context, index) {
                 return FoodPageViewItem(
                   index: index,
@@ -97,6 +86,20 @@ class _PageState extends State<_Page> {
                   //   : 0.0
                 );
               },
+            ),
+            Column(
+              children: [
+                const SizedBox(
+                  height: kToolbarHeight,
+                ),
+                CustomAppBar(
+                  onPressed: () => Navigator.of(context).pop(),
+                  currentIndex: _currentIndex ?? 0,
+                ),
+                const Expanded(
+                  child: SizedBox(),
+                ),
+              ],
             ),
           ],
         ),
