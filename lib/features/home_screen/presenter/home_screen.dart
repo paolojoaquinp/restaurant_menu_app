@@ -2,7 +2,9 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:restaurant_menu_app/features/detail_food_meal/presenter/detail_food_meal_screen.dart';
 import 'package:restaurant_menu_app/features/home_screen/domain/entities/food_menu.dart';
+import 'package:restaurant_menu_app/features/home_screen/presenter/widgets/card_food_animated.dart';
 import 'package:restaurant_menu_app/features/home_screen/presenter/widgets/card_test.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -11,6 +13,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: PerspectiveListView(
         visualizedItems: 7,
         itemExtent: MediaQuery.sizeOf(context).height * .7,
@@ -21,7 +24,10 @@ class HomeScreen extends StatelessWidget {
         children: List.generate(FoodMenu.fakeFoodMenuValues.length, (index) {
           // final borderColor = Colors.accents[index % Colors.accents.length];
           final elem = FoodMenu.fakeFoodMenuValues[index];
-          return CardTest(index: index,foodMenu: elem,);
+          return CardTest(
+            index: index,
+            foodMenu: elem,
+          );
         }),
       ),
     );
@@ -149,9 +155,24 @@ class PerspectiveListViewState extends State<PerspectiveListView> {
               //---------------------------------------
               Positioned.fill(
                 top: height - widget.itemExtent!,
-                child: GestureDetector(
-                  onTap: () => widget.onTapFrontItem?.call(_currentIndex),
-                ),
+                child: GestureDetector(onTap: () {
+                  widget.onTapFrontItem?.call(_currentIndex);
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            DetailFoodMealScreen(
+                              foodMenu:(widget.children[_currentIndex!] as CardTest).foodMenu!,
+                              index: _currentIndex!,
+                            ),transitionDuration: const Duration(seconds: 1),
+                            transitionsBuilder:(context, animation, secondaryAnimation, child) {
+                              return SizeTransition(
+                                sizeFactor: animation,
+                                child: child,
+                              );
+                            },
+                      ));
+                }),
               )
             ],
           );
@@ -192,8 +213,8 @@ class _PerspectiveItems extends StatelessWidget {
                 heightItem: heightItem,
                 factorChange: 1,
                 endScale: .5,
-                child: children[currentIndex! - generatedItems],
                 currentIndex: currentIndex! - generatedItems,
+                child: children[currentIndex! - generatedItems],
               )
             else
               const SizedBox(),
@@ -206,16 +227,22 @@ class _PerspectiveItems extends StatelessWidget {
                       heightItem: heightItem,
                       factorChange: pagePercent,
                       scale: lerpDouble(0.5, 1, (index + 1) / generatedItems),
-                      translateY: (height - heightItem!) * (index + 1) / generatedItems,
-                      endTranslateY: (height - heightItem!) * (index / generatedItems),
+                      translateY:
+                          (height - heightItem!) * (index + 1) / generatedItems,
+                      endTranslateY:
+                          (height - heightItem!) * (index / generatedItems),
                       endScale: lerpDouble(0.5, 1, index / generatedItems),
-                      translateX: (-50.0) * (index + 1) / generatedItems, // Nuevo
-                      endTranslateX: (-50.0) * (index / generatedItems), // Nuevo
-                      rotateZStart: (-pi / 12) * (index + 1) / generatedItems, // Nuevo
+                      translateX:
+                          (-50.0) * (index + 1) / generatedItems, // Nuevo
+                      endTranslateX:
+                          (-50.0) * (index / generatedItems), // Nuevo
+                      rotateZStart:
+                          (-pi / 12) * (index + 1) / generatedItems, // Nuevo
                       rotateZEnd: (-pi / 12) * (index) / generatedItems,
                       currentIndex: index,
                       opacity: 1.0,
-                      child: children[currentIndex! - (((generatedItems - 2) - index) + 1)],
+                      child: children[
+                          currentIndex! - (((generatedItems - 2) - index) + 1)],
                     )
                   : const SizedBox(),
             //---------------------------------
@@ -227,13 +254,17 @@ class _PerspectiveItems extends StatelessWidget {
                 factorChange: pagePercent,
                 translateY: height + 20,
                 endTranslateY: height - heightItem!,
-                translateX: -30.0 ,
-                endTranslateX: -50.0 ,
+                translateX: -30.0,
+                endTranslateX: -50.0,
                 currentIndex: currentIndex! + 1,
                 rotateZStart: -pi / 4,
-                rotateZEnd: -pi / 12, 
-                child: children[currentIndex! + 1],
+                rotateZEnd: -pi / 12,
                 opacity: pagePercent!,
+                child: CardFoodAnimated(
+                  foodMenu: (children[currentIndex! + 1] as CardTest).foodMenu!,
+                  index: (children[currentIndex! + 1] as CardTest).index,
+                  factorChange: pagePercent!,
+                ),
               )
             else
               const SizedBox()
@@ -256,8 +287,8 @@ class _TransformedItem extends StatelessWidget {
     required this.currentIndex,
     this.translateX = 0.0,
     this.endTranslateX = 0.0,
-    this.rotateZStart = 0.0, // Nuevo
-    this.rotateZEnd = 0.0,   // Nuevo
+    this.rotateZStart = 0.0,
+    this.rotateZEnd = 0.0,
     this.opacity = 1.0,
   });
 
@@ -270,11 +301,10 @@ class _TransformedItem extends StatelessWidget {
   final double? scale;
   final int currentIndex;
   final double endTranslateX; // Nuevo
-  final double translateX;    // Nuevo
+  final double translateX; // Nuevo
   final double rotateZStart;
   final double rotateZEnd;
   final double opacity;
-
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +316,8 @@ class _TransformedItem extends StatelessWidget {
           lerpDouble(translateX, endTranslateX, factorChange!)!,
           lerpDouble(translateY, endTranslateY, factorChange!)!,
         )
-        ..rotateZ(lerpDouble(rotateZStart, rotateZEnd, factorChange!)!), // Nuevo
+        ..rotateZ(
+            lerpDouble(rotateZStart, rotateZEnd, factorChange!)!), // Nuevo
       child: Opacity(
         opacity: opacity,
         child: Align(
