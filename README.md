@@ -1,16 +1,35 @@
-# restaurant_menu_app
 
-A new Flutter project.
+# Restaurant App Menu
 
-## Getting Started
+Choose your favorite meal and view detailed information about each one in an interactive and beautifully designed UI menu.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+Inspiration: NaN
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+## Screenshots
+
+![App Ticket Bus Screenshot](./screenshots/screenshot-menu-app.png)
+
+
+## Features
+
+- Stacked Perspective Card Animation
+- PageView animated
+
+
+## Video Demo
+
+![App Ticket Bus Gif Video Demostration](./screenshots/restauratn-menu-giphy.gif)
+
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+
+## Support
+
+For support, email paolojoaquinpintoperez@gmail.com or join our community in youtube [Pacha code](https://www.youtube.com/@paolojoaquinp).
+
